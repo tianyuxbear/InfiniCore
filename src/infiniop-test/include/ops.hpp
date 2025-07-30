@@ -22,6 +22,7 @@ DECLARE_INFINIOP_TEST(logical_and)
 DECLARE_INFINIOP_TEST(logical_or)
 DECLARE_INFINIOP_TEST(equal)
 DECLARE_INFINIOP_TEST(all_equal)
+DECLARE_INFINIOP_TEST(relu_backward)
 
 #define REGISTER_INFINIOP_TEST(name)                      \
     {                                                     \
@@ -55,6 +56,7 @@ DECLARE_INFINIOP_TEST(all_equal)
         REGISTER_INFINIOP_TEST(logical_or)     \
         REGISTER_INFINIOP_TEST(equal)          \
         REGISTER_INFINIOP_TEST(all_equal)      \
+        REGISTER_INFINIOP_TEST(relu_backward)  \
     }
 
 namespace infiniop_test {
