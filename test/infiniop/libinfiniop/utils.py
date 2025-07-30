@@ -110,6 +110,9 @@ class TestTensor(CTensor):
             )
         else:
             raise ValueError("Unsupported mode")
+        
+        if is_bool:
+            self._torch_tensor = self._torch_tensor > 0.5
 
         if is_bool:
             self._torch_tensor = self._torch_tensor > 0.5
@@ -128,6 +131,9 @@ class TestTensor(CTensor):
 
     def torch_tensor(self):
         return self._torch_tensor
+
+    def update_torch_tensor(self, new_tensor: torch.tensor):
+        self._torch_tensor = new_tensor
 
     def actual_tensor(self):
         return self._data_tensor
