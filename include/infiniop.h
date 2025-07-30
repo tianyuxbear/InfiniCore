@@ -11,6 +11,7 @@
 #include "infiniop/ops/div.h"
 #include "infiniop/ops/equal.h"
 #include "infiniop/ops/gelu.h"
+#include "infiniop/ops/gelu_backward.h"
 #include "infiniop/ops/gemm.h"
 #include "infiniop/ops/logical_and.h"
 #include "infiniop/ops/logical_or.h"
