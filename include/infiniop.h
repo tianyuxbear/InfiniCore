@@ -10,6 +10,7 @@
 #include "infiniop/ops/div.h"
 #include "infiniop/ops/gemm.h"
 #include "infiniop/ops/logical_and.h"
+#include "infiniop/ops/logical_or.h"
 #include "infiniop/ops/mul.h"
 #include "infiniop/ops/random_sample.h"
 #include "infiniop/ops/rearrange.h"
