@@ -620,6 +620,7 @@ def logical_or_(lib):
         infiniopOperatorDescriptor_t,
     ]
 
+
 @OpRegister.operator
 def equal_(lib):
     lib.infiniopCreateEqualDescriptor.restype = c_int32
@@ -650,5 +651,39 @@ def equal_(lib):
 
     lib.infiniopDestroyEqualDescriptor.restype = c_int32
     lib.infiniopDestroyEqualDescriptor.argtypes = [
+        infiniopOperatorDescriptor_t,
+    ]
+
+
+@OpRegister.operator
+def relu_backward_(lib):
+    lib.infiniopCreateReluBackwardDescriptor.restype = c_int32
+    lib.infiniopCreateReluBackwardDescriptor.argtypes = [
+        infiniopHandle_t,
+        POINTER(infiniopOperatorDescriptor_t),
+        infiniopTensorDescriptor_t,
+        infiniopTensorDescriptor_t,
+        infiniopTensorDescriptor_t,
+    ]
+
+    lib.infiniopGetReluBackwardWorkspaceSize.restype = c_int32
+    lib.infiniopGetReluBackwardWorkspaceSize.argtypes = [
+        infiniopOperatorDescriptor_t,
+        POINTER(c_size_t),
+    ]
+
+    lib.infiniopReluBackward.restype = c_int32
+    lib.infiniopReluBackward.argtypes = [
+        infiniopOperatorDescriptor_t,
+        c_void_p,
+        c_size_t,
+        c_void_p,
+        c_void_p,
+        c_void_p,
+        c_void_p,
+    ]
+
+    lib.infiniopDestroyReluBackwardDescriptor.restype = c_int32
+    lib.infiniopDestroyReluBackwardDescriptor.argtypes = [
         infiniopOperatorDescriptor_t,
     ]
