@@ -25,6 +25,7 @@ DECLARE_INFINIOP_TEST(all_equal)
 DECLARE_INFINIOP_TEST(relu_backward)
 DECLARE_INFINIOP_TEST(gelu)
 DECLARE_INFINIOP_TEST(gelu_backward)
+DECLARE_INFINIOP_TEST(cross_entropy_loss_backward)
 
 #define REGISTER_INFINIOP_TEST(name)                      \
     {                                                     \
@@ -61,6 +62,7 @@ DECLARE_INFINIOP_TEST(gelu_backward)
         REGISTER_INFINIOP_TEST(relu_backward)  \
         REGISTER_INFINIOP_TEST(gelu)           \
         REGISTER_INFINIOP_TEST(gelu_backward)  \
+        REGISTER_INFINIOP_TEST(cross_entropy_loss_backward)  \
     }
 
 namespace infiniop_test {
