@@ -120,8 +120,8 @@ class DivTestCase(InfiniopTestCase):
         )
 
 
-if __name__ == "__main__":
-    test_writer = InfiniopTestWriter("div.gguf")
+def gen_gguf(dtype: np.dtype, filename: str):
+    test_writer = InfiniopTestWriter(filename)
     test_cases = []
 
     # 测试用例配置
@@ -140,40 +140,50 @@ if __name__ == "__main__":
         ((4, 4, 512), None, None, None),
     ]
 
-    # 数据类型
-    _TENSOR_DTYPES_ = [np.float32, np.float16, bfloat16]
-
     # 生成测试用例
-    for dtype in _TENSOR_DTYPES_:
-        for shape, stride_a, stride_b, stride_c in _TEST_CASES_:
-            # 生成随机张量
-            a = random_tensor(shape, dtype)
-            b = random_tensor(shape, dtype)
+    for shape, stride_a, stride_b, stride_c in _TEST_CASES_:
+        # 生成随机张量
+        a = random_tensor(shape, dtype)
+        b = random_tensor(shape, dtype)
 
-            # 确保除数不包含零（避免除以零）
-            b = np.where(np.abs(b) < 1e-6, 1e-6 * np.sign(b), b).astype(dtype)
+        # 确保除数不包含零（避免除以零）
+        b = np.where(np.abs(b) < 1e-6, 1e-6 * np.sign(b), b).astype(dtype)
 
-            # 处理零步长情况
-            a = process_zero_stride_tensor(a, stride_a)
-            b = process_zero_stride_tensor(b, stride_b)
+        # 处理零步长情况
+        a = process_zero_stride_tensor(a, stride_a)
+        b = process_zero_stride_tensor(b, stride_b)
 
-            # 创建输出张量（初始为空）
-            c = np.empty(tuple(0 for _ in shape), dtype=dtype)
+        # 创建输出张量（初始为空）
+        c = np.empty(tuple(0 for _ in shape), dtype=dtype)
 
-            # 创建测试用例
-            test_case = DivTestCase(
-                a=a,
-                shape_a=shape,
-                stride_a=stride_a,
-                b=b,
-                shape_b=shape,
-                stride_b=stride_b,
-                c=c,
-                shape_c=shape,
-                stride_c=stride_c,
-            )
-            test_cases.append(test_case)
+        # 创建测试用例
+        test_case = DivTestCase(
+            a=a,
+            shape_a=shape,
+            stride_a=stride_a,
+            b=b,
+            shape_b=shape,
+            stride_b=stride_b,
+            c=c,
+            shape_c=shape,
+            stride_c=stride_c,
+        )
+        test_cases.append(test_case)
 
     # 添加所有测试用例并保存
     test_writer.add_tests(test_cases)
     test_writer.save()
+
+
+if __name__ == "__main__":
+    _TENSOR_DTYPES_ = [np.float32, np.float16, bfloat16]
+    dtype_filename_map = {
+        np.float32: "div_f32.gguf",
+        np.float16: "div_f16.gguf",
+        bfloat16: "div_bf16.gguf",
+    }
+
+    # 生成测试用例
+    for dtype in _TENSOR_DTYPES_:
+        filename = dtype_filename_map[dtype]
+        gen_gguf(dtype, filename)

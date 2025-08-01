@@ -173,8 +173,8 @@ class GeluBackwardTestCase(InfiniopTestCase):
         )
 
 
-if __name__ == "__main__":
-    test_writer = InfiniopTestWriter("gelu_backward.gguf")
+def gen_gguf(dtype: np.dtype, filename: str):
+    test_writer = InfiniopTestWriter(filename)
     test_cases = []
 
     # 测试用例配置
@@ -194,38 +194,45 @@ if __name__ == "__main__":
         ((1, 100), None, None, None),
     ]
 
-    # 数据类型
-    _TENSOR_DTYPES_ = [np.float32, np.float16, bfloat16]
-
     # 生成测试用例
-    for dtype in _TENSOR_DTYPES_:
-        for shape, stride_input, stride_grad_output, stride_grad_input in _TEST_CASES_:
-            # 生成随机张量
-            input = random_tensor(shape, dtype)
-            grad_output = random_tensor(shape, dtype)
-
-            # 处理零步长情况
-            input = process_zero_stride_tensor(input, stride_input)
-            grad_output = process_zero_stride_tensor(grad_output, stride_grad_output)
-
-            # 创建输出张量（初始为空）
-            grad_input = np.empty(tuple(0 for _ in shape), dtype=dtype)
-
-            # 创建测试用例
-            test_case = GeluBackwardTestCase(
-                input=input,
-                shape_input=shape,
-                stride_input=stride_input,
-                grad_output=grad_output,
-                shape_grad_output=shape,
-                stride_grad_output=stride_grad_output,
-                grad_input=grad_input,
-                shape_grad_input=shape,
-                stride_grad_input=stride_grad_input,
-                approximate_mode="tanh",
-            )
-            test_cases.append(test_case)
+    for shape, stride_input, stride_grad_output, stride_grad_input in _TEST_CASES_:
+        # 生成随机张量
+        input = random_tensor(shape, dtype)
+        grad_output = random_tensor(shape, dtype)
+        # 处理零步长情况
+        input = process_zero_stride_tensor(input, stride_input)
+        grad_output = process_zero_stride_tensor(grad_output, stride_grad_output)
+        # 创建输出张量（初始为空）
+        grad_input = np.empty(tuple(0 for _ in shape), dtype=dtype)
+        # 创建测试用例
+        test_case = GeluBackwardTestCase(
+            input=input,
+            shape_input=shape,
+            stride_input=stride_input,
+            grad_output=grad_output,
+            shape_grad_output=shape,
+            stride_grad_output=stride_grad_output,
+            grad_input=grad_input,
+            shape_grad_input=shape,
+            stride_grad_input=stride_grad_input,
+            approximate_mode="tanh",
+        )
+        test_cases.append(test_case)
 
     # 添加所有测试用例并保存
     test_writer.add_tests(test_cases)
     test_writer.save()
+
+
+if __name__ == "__main__":
+    _TENSOR_DTYPES_ = [np.float32, np.float16, bfloat16]
+    dtype_filename_map = {
+        np.float32: "gelu_backward_f32.gguf",
+        np.float16: "gelu_backward_f16.gguf",
+        bfloat16: "gelu_backward_bf16.gguf",
+    }
+
+    # 生成测试用例
+    for dtype in _TENSOR_DTYPES_:
+        filename = dtype_filename_map[dtype]
+        gen_gguf(dtype, filename)

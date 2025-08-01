@@ -125,8 +125,8 @@ class CrossEntropyLossBackwardTestCase(InfiniopTestCase):
         )
 
 
-if __name__ == "__main__":
-    test_writer = InfiniopTestWriter("cross_entropy_loss_backward.gguf")
+def gen_gguf(dtype: np.dtype, filename: str):
+    test_writer = InfiniopTestWriter(filename)
     test_cases = []
 
     # 测试用例配置
@@ -195,39 +195,48 @@ if __name__ == "__main__":
         ),
     ]
 
-    _TENSOR_DTYPES_ = [np.float32, np.float16, bfloat16]
-    for dtype in _TENSOR_DTYPES_:
-        for (
-            shape_probs,
-            shape_target,
-            stride_probs,
-            stride_target,
-            stride_grad_logits,
-        ) in _TEST_CASES_:
-            # 生成随机张量
-            probs = np.random.randn(*shape_probs).astype(dtype)
-            target = generate_one_hot(shape_target, dtype=dtype)
-
-            # 处理零步长情况
-            probs = process_zero_stride_tensor(probs, stride_probs)
-            target = process_zero_stride_tensor(target, stride_target)
-
-            # 创建输出张量（初始为空）
-            grad_logits = np.empty(tuple(0 for _ in shape_probs), dtype=dtype)
-
-            # 创建测试用例
-            test_case = CrossEntropyLossBackwardTestCase(
-                probs=probs,
-                shape_probs=shape_probs,
-                stride_probs=stride_probs,
-                target=target,
-                shape_target=shape_target,
-                stride_target=stride_target,
-                grad_logits=grad_logits,
-                shape_grad_logits=shape_probs,
-                stride_grad_logits=stride_grad_logits,
-            )
-            test_cases.append(test_case)
+    for (
+        shape_probs,
+        shape_target,
+        stride_probs,
+        stride_target,
+        stride_grad_logits,
+    ) in _TEST_CASES_:
+        # 生成随机张量
+        probs = np.random.randn(*shape_probs).astype(dtype)
+        target = generate_one_hot(shape_target, dtype=dtype)
+        # 处理零步长情况
+        probs = process_zero_stride_tensor(probs, stride_probs)
+        target = process_zero_stride_tensor(target, stride_target)
+        # 创建输出张量（初始为空）
+        grad_logits = np.empty(tuple(0 for _ in shape_probs), dtype=dtype)
+        # 创建测试用例
+        test_case = CrossEntropyLossBackwardTestCase(
+            probs=probs,
+            shape_probs=shape_probs,
+            stride_probs=stride_probs,
+            target=target,
+            shape_target=shape_target,
+            stride_target=stride_target,
+            grad_logits=grad_logits,
+            shape_grad_logits=shape_probs,
+            stride_grad_logits=stride_grad_logits,
+        )
+        test_cases.append(test_case)
 
     test_writer.add_tests(test_cases)
     test_writer.save()
+
+
+if __name__ == "__main__":
+    _TENSOR_DTYPES_ = [np.float32, np.float16, bfloat16]
+    dtype_filename_map = {
+        np.float32: "cross_entropy_loss_backward_f32.gguf",
+        np.float16: "cross_entropy_loss_backward_f16.gguf",
+        bfloat16: "cross_entropy_loss_backward_bf16.gguf",
+    }
+
+    # 生成测试用例
+    for dtype in _TENSOR_DTYPES_:
+        filename = dtype_filename_map[dtype]
+        gen_gguf(dtype, filename)
