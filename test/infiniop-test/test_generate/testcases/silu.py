@@ -96,8 +96,8 @@ class SILUTestCase(InfiniopTestCase):
         )
 
 
-if __name__ == "__main__":
-    test_writer = InfiniopTestWriter("silu.gguf")
+def gen_gguf(dtype: np.dtype, filename: str):
+    test_writer = InfiniopTestWriter(filename)
     test_cases = []
 
     # 测试用例配置
@@ -114,30 +114,41 @@ if __name__ == "__main__":
         ((256,), (0,), None),
     ]
 
-    _TENSOR_DTYPES_ = [np.float32, np.float16, bfloat16]
-
     # 生成测试用例
-    for dtype in _TENSOR_DTYPES_:
-        for shape, stride_input, stride_output in _TEST_CASES_:
-            # 创建输入张量
-            input = random_tensor(shape, dtype)
-            input = process_zero_stride_tensor(input, stride_input)
+    for shape, stride_input, stride_output in _TEST_CASES_:
+        # 创建输入张量
+        input = random_tensor(shape, dtype)
+        input = process_zero_stride_tensor(input, stride_input)
 
-            # 创建输出占位张量
-            output = np.empty(tuple(0 for _ in shape), dtype=dtype)
+        # 创建输出占位张量
+        output = np.empty(tuple(0 for _ in shape), dtype=dtype)
 
-            # 添加测试用例
-            test_cases.append(
-                SILUTestCase(
-                    input=input,
-                    output=output,
-                    shape_input=shape,
-                    stride_input=stride_input,
-                    shape_output=shape,
-                    stride_output=stride_output,
-                )
+        # 添加测试用例
+        test_cases.append(
+            SILUTestCase(
+                input=input,
+                output=output,
+                shape_input=shape,
+                stride_input=stride_input,
+                shape_output=shape,
+                stride_output=stride_output,
             )
+        )
 
     # 添加所有测试用例并保存
     test_writer.add_tests(test_cases)
     test_writer.save()
+
+
+if __name__ == "__main__":
+    _TENSOR_DTYPES_ = [np.float32, np.float16, bfloat16]
+    dtype_filename_map = {
+        np.float32: "silu_f32.gguf",
+        np.float16: "silu_f16.gguf",
+        bfloat16: "silu_bf16.gguf",
+    }
+
+    # 生成测试用例
+    for dtype in _TENSOR_DTYPES_:
+        filename = dtype_filename_map[dtype]
+        gen_gguf(dtype, filename)
