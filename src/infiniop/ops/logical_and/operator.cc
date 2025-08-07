@@ -19,13 +19,13 @@ __C infiniStatus_t infiniopCreateLogicalAndDescriptor(
     infiniopTensorDescriptor_t a_desc,
     infiniopTensorDescriptor_t b_desc) {
 
-#define CREATE(CASE, NAMESPACE)                                            \
-    case CASE:                                                             \
+#define CREATE(CASE, NAMESPACE)                                                    \
+    case CASE:                                                                     \
         return op::logical_and::NAMESPACE::Descriptor::create(                     \
-            handle,                                                        \
+            handle,                                                                \
             reinterpret_cast<op::logical_and::NAMESPACE::Descriptor **>(desc_ptr), \
-            c_desc,                                                        \
-            {a_desc,                                                       \
+            c_desc,                                                                \
+            {a_desc,                                                               \
              b_desc})
 
     switch (handle->device) {
@@ -52,8 +52,8 @@ __C infiniStatus_t infiniopCreateLogicalAndDescriptor(
 
 __C infiniStatus_t infiniopGetLogicalAndWorkspaceSize(infiniopLogicalAndDescriptor_t desc, size_t *size) {
 
-#define GET(CASE, NAMESPACE)                                                               \
-    case CASE:                                                                             \
+#define GET(CASE, NAMESPACE)                                                                       \
+    case CASE:                                                                                     \
         *size = reinterpret_cast<op::logical_and::NAMESPACE::Descriptor *>(desc)->workspaceSize(); \
         return INFINI_STATUS_SUCCESS
 
@@ -87,8 +87,8 @@ __C infiniStatus_t infiniopLogicalAnd(
     const void *b,
     void *stream) {
 
-#define CALCULATE(CASE, NAMESPACE)                                            \
-    case CASE:                                                                \
+#define CALCULATE(CASE, NAMESPACE)                                                    \
+    case CASE:                                                                        \
         return reinterpret_cast<const op::logical_and::NAMESPACE::Descriptor *>(desc) \
             ->calculate(workspace, workspace_size, c, {a, b}, stream)
 
@@ -117,8 +117,8 @@ __C infiniStatus_t infiniopLogicalAnd(
 __C infiniStatus_t
 infiniopDestroyLogicalAndDescriptor(infiniopLogicalAndDescriptor_t desc) {
 
-#define DELETE(CASE, NAMESPACE)                                                \
-    case CASE:                                                                 \
+#define DELETE(CASE, NAMESPACE)                                                        \
+    case CASE:                                                                         \
         delete reinterpret_cast<const op::logical_and::NAMESPACE::Descriptor *>(desc); \
         return INFINI_STATUS_SUCCESS
 
