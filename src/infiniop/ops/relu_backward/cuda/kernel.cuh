@@ -1,7 +1,6 @@
 #ifndef __RELU_BACKWARD_CUDA_H__
 #define __RELU_BACKWARD_CUDA_H__
 
-#include <cuda_fp16.h>
 namespace op::relu_backward::cuda {
 typedef struct ReluBackwardOp {
 public:
