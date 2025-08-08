@@ -1,7 +1,6 @@
 #ifndef __CROSS_ENTROPY_LOSS_BACKWARD_CUDA_H__
 #define __CROSS_ENTROPY_LOSS_BACKWARD_CUDA_H__
 
-#include <cuda_fp16.h>
 namespace op::cross_entropy_loss_backward::cuda {
 typedef struct CrossEntropyLossBackwardOp {
 public:
