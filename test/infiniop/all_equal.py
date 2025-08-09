@@ -5,6 +5,7 @@ from enum import Enum, auto
 import torch
 from libinfiniop import (
     LIBINFINIOP,
+    InfiniDeviceEnum,
     InfiniDeviceNames,
     InfiniDtype,
     InfiniDtypeNames,
@@ -189,6 +190,17 @@ if __name__ == "__main__":
     NUM_ITERATIONS = args.num_iterations
 
     for device in get_test_devices(args):
+        if device == InfiniDeviceEnum.ILUVATAR:
+            _TENSOR_DTYPES = [
+                InfiniDtype.BOOL,
+                InfiniDtype.I8,
+                InfiniDtype.I16,
+                InfiniDtype.I32,
+                InfiniDtype.I64,
+                InfiniDtype.BF16,
+                InfiniDtype.F16,
+                InfiniDtype.F32,
+            ]
         test_operator(device, test, _TEST_CASES, _TENSOR_DTYPES)
 
     print("\033[92mTest passed!\033[0m")
