@@ -110,7 +110,7 @@ class TestTensor(CTensor):
             )
         else:
             raise ValueError("Unsupported mode")
-        
+
         if is_bool:
             self._torch_tensor = self._torch_tensor > 0.5
 
@@ -364,6 +364,11 @@ def debug(actual, desired, atol=0, rtol=1e-2, equal_nan=False, verbose=True):
 
     # 如果是BF16，全部转成FP32再比对
     if actual.dtype == torch.bfloat16 or desired.dtype == torch.bfloat16:
+        actual = actual.to(torch.float32)
+        desired = desired.to(torch.float32)
+
+    # 如果是BOOL，全部转成FP32再比对
+    if actual.dtype == torch.bool or desired.dtype == torch.bool:
         actual = actual.to(torch.float32)
         desired = desired.to(torch.float32)
 

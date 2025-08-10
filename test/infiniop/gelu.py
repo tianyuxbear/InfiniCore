@@ -19,6 +19,8 @@ from libinfiniop import (
     infiniopOperatorDescriptor_t,
     profile_operation,
     test_operator,
+    to_torch_dtype,
+    torch_device_map,
 )
 
 # ==============================================================================
@@ -101,8 +103,14 @@ def test(
         f"dtype:{InfiniDtypeNames[dtype]} inplace:{inplace}"
     )
 
-    new_tensor = torch.nn.functional.gelu(input.torch_tensor(), approximate="tanh")
-    output.update_torch_tensor(new_tensor)
+    # ans的shape对齐至input，而input可能存在广播维度
+    ans = torch.nn.functional.gelu(input.torch_tensor(), approximate="tanh")
+    # 利用add(+)计算的自动广播机制，确保ouput的torch_tensor与actual_tensor shape一致，以通过debug模式的shape检查
+    zero = torch.zeros(
+        *shape, dtype=to_torch_dtype(dtype), device=torch_device_map[device]
+    )
+    new_output = ans + zero
+    output.update_torch_tensor(new_output)
 
     if sync is not None:
         sync()
