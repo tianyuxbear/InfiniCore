@@ -1,4 +1,5 @@
 #include "all_equal_cpu.h"
+#include "../../../devices/cpu/common_cpu.h"
 #include <cstddef>
 
 namespace op::all_equal::cpu {
