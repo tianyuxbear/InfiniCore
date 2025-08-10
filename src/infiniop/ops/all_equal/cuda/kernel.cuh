@@ -3,7 +3,6 @@
 #include "../../../elementwise/nvidia/elementwise_nvidia.cuh"
 #include <cstddef>
 #include <cstdint>
-#include <cuda/atomic>
 
 template <unsigned int BLOCK_SIZE, typename Tdata>
 __global__ void compareKernel(size_t input_numel, size_t ndim, const bool *__restrict__ input_contiguous, const bool *__restrict__ input_broadcasted, const size_t *__restrict__ input_shapes, const ptrdiff_t *__restrict__ output_strides, const ptrdiff_t *__restrict__ input_strides, const void *const *inputs, uint8_t *flags) {

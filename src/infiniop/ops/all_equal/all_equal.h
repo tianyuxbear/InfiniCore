@@ -1,7 +1,6 @@
 #ifndef __ALL_EQUAL_H
 #define __ALL_EQUAL_H
 
-#include "../../devices/cpu/common_cpu.h"
 #include "../../handle.h"
 #include "../../operator.h"
 #include "info.h"
